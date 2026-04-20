@@ -1,4 +1,4 @@
-package ru.shpg.eventreceiver.security;
+package ru.shpg.eventreceiver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.shpg.eventreceiver.security.JwtAuthConverter;
 
 @Configuration
 @EnableWebSecurity

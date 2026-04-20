@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "outbox_event")
@@ -14,18 +15,21 @@ import java.time.Instant;
 public class OutboxEvent {
 
     @Id
-    @Column(name = "event_id")
-    private String eventId;
+    private UUID id;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "aggregate_id", nullable = false)
+    private String aggregateId;
 
-    private String type;
+    @Column(name = "aggregate_type", nullable = false)
+    private String aggregateType;
 
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
     private String payload;
 
-    @Column(name = "created_at")
+    @Column(name = "client_timestamp", nullable = false)
+    private Instant clientTimestamp;
+
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
 }

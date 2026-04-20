@@ -1,0 +1,18 @@
+package ru.shpg.eventreceiver.config;
+
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+@Configuration
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
+public class ShedLockConfig {
+
+    @Bean
+    public JdbcTemplateLockProvider lockProvider(JdbcTemplate jdbcTemplate) {
+        return new JdbcTemplateLockProvider(jdbcTemplate);
+    }
+
+}
