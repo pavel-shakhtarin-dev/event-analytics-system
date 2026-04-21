@@ -27,22 +27,17 @@ public class OutboxCleaningJob {
         if (!props.isEnabled()) {
             return;
         }
-
         var threshold = Instant.now().minus(props.getRetention());
-
         int totalDeleted = 0;
         int iterations = 0;
 
         while (true) {
             int deleted = worker.deleteBatch(threshold, props.getBatchSize());
-
             if (deleted == 0) {
                 break;
             }
-
             totalDeleted += deleted;
             iterations++;
-
             if (iterations >= props.getMaxIterations()) {
                 log.warn("Outbox cleanup stopped by maxIterations limit");
                 break;

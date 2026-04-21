@@ -2,6 +2,7 @@ package ru.shpg.eventreceiver.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +40,7 @@ class EventControllerTest {
     }
 
     @Test
+    @DisplayName("Should accept event")
     void shouldAcceptEvent() throws Exception {
         EventRequest request = createEventRequest();
 
@@ -51,7 +53,8 @@ class EventControllerTest {
     }
 
     @Test
-    void shouldNotCallService_whenRequestInvalid() throws Exception {
+    @DisplayName("Should not call service when request is invalid")
+    void shouldNotCallServiceWhenRequestInvalid() throws Exception {
         String invalidJson = "{}";
 
         mockMvc.perform(post("/events")
@@ -63,7 +66,8 @@ class EventControllerTest {
     }
 
     @Test
-    void shouldNotCallService_whenValidationFailed() throws Exception {
+    @DisplayName("Should not call service when validation failed")
+    void shouldNotCallServiceWhenValidationFailed() throws Exception {
         EventRequest eventRequest = createInvalidEventRequest();
 
         mockMvc.perform(post("/events")

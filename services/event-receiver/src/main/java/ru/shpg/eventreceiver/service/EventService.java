@@ -37,7 +37,7 @@ public class EventService {
 
         var event = outboxEventMapper.toEntity(request, userId);
 
-        repository.insert(event);
+        repository.save(event);
     }
 
 }

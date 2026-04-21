@@ -13,7 +13,7 @@ public interface OutboxEventMapper {
     @Mapping(target = "id", source = "request.eventId")
     @Mapping(target = "aggregateId", source = "userId")
     @Mapping(target = "aggregateType", source = "request.type")
-    @Mapping(target = "payload", source = "request", qualifiedByName = "toJson")
+    @Mapping(target = "payload", source = "request.payload", qualifiedByName = "toJson")
     @Mapping(target = "eventTimestamp", source = "request.timestamp")
     @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())")
     OutboxEvent toEntity(EventRequest request, String userId);

@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.domain.Persistable;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "outbox_event")
 @Data
-public class OutboxEvent {
+public class OutboxEvent implements Persistable<UUID> {
 
     @Id
     private UUID id;
@@ -34,6 +35,11 @@ public class OutboxEvent {
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 
 }
 

@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
       default_schema: event
 
   flyway:
@@ -27,6 +27,14 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/event-platform
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html    # Путь к UI
+    operations-sorter: method # Сортировка методов (GET, POST и т.д.)
+  api-docs:
+    path: /v3/api-docs        # Путь к JSON-документации
+
 
 app:
   security:

@@ -18,7 +18,7 @@ public record EventRequest(
         @NotNull
         Long timestamp,
 
-        Map<String, Object> metadata
+        Map<String, Object> payload
 
 ) {
 }
