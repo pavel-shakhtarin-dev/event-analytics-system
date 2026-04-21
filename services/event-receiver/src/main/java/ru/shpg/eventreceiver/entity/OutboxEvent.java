@@ -5,28 +5,41 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.springframework.data.domain.Persistable;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "outbox_event")
 @Data
-public class OutboxEvent {
+public class OutboxEvent implements Persistable<UUID> {
 
     @Id
-    @Column(name = "event_id")
-    private String eventId;
+    private UUID id;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "aggregateid", nullable = false)
+    private String aggregateId;
 
-    private String type;
+    @Column(name = "aggregatetype", nullable = false)
+    private String aggregateType;
 
-    @Column(columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
     private String payload;
 
-    @Column(name = "created_at")
+    @Column(name = "event_timestamp", nullable = false)
+    private Instant eventTimestamp;
+
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 
 }
 

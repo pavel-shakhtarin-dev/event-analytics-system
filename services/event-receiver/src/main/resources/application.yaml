@@ -6,13 +6,44 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/event_db
+    url: jdbc:postgresql://localhost:5439/event_db?currentSchema=event
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      default_schema: event
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    default-schema: event
 
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/event-platform
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html    # Путь к UI
+    operations-sorter: method # Сортировка методов (GET, POST и т.д.)
+  api-docs:
+    path: /v3/api-docs        # Путь к JSON-документации
+
+
+app:
+  security:
+    enabled: false
+  outbox:
+    cleanup:
+      enabled: true
+      cron: "0 0 0 * * *"
+      retention: PT24H
+      batch-size: 1000
+      shed-lock-at-most: "10m"
+      shed-lock-at-least: "1m"

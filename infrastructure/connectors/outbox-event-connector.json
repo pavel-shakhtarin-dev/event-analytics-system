@@ -1,0 +1,39 @@
+{
+  "name": "outbox-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+
+    "topic.prefix": "outbox",
+
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "debezium",
+    "database.password": "debezium",
+    "database.dbname": "event_db",
+
+    "plugin.name": "pgoutput",
+    "slot.name": "outbox_slot",
+    "publication.name": "dbz_publication",
+    "publication.autocreate.mode": "disabled",
+
+    "table.include.list": "event.outbox_event",
+
+    "tombstones.on.delete": "false",
+
+    "transforms": "outbox",
+
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+
+    "transforms.outbox.route.by.field": "aggregatetype",
+    "transforms.outbox.route.topic.replacement": "outbox.${routedByValue}",
+
+    "transforms.outbox.field.event.key": "aggregateid",
+
+    "transforms.outbox.field.event.payload": "payload",
+
+    "transforms.outbox.table.fields.additional.placement":
+    "id:header:eventId,aggregate_type:header:eventType",
+
+    "transforms.outbox.expand.json.payload": "true"
+  }
+}

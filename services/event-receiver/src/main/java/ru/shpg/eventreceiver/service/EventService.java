@@ -5,11 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.shpg.eventreceiver.entity.OutboxEvent;
 import ru.shpg.eventreceiver.mapper.OutboxEventMapper;
 import ru.shpg.eventreceiver.model.EventRequest;
 import ru.shpg.eventreceiver.repository.OutboxRepository;
-import ru.shpg.eventreceiver.security.SecurityUtils;
+import ru.shpg.eventreceiver.security.util.UserProvider;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +18,8 @@ public class EventService {
     private final OutboxRepository repository;
 
     private final OutboxEventMapper outboxEventMapper;
+
+    private final UserProvider userProvider;
 
     @Observed(
             name = "event.process",
@@ -30,12 +31,11 @@ public class EventService {
     )
     @Transactional
     public void process(EventRequest request) {
-
-        String userId = SecurityUtils.getUserId();
+        var userId = userProvider.getUserId();
 
         log.info("event_received eventId={} userId={}", request.eventId(), userId);
 
-        OutboxEvent event = outboxEventMapper.toEntity(request, userId);
+        var event = outboxEventMapper.toEntity(request, userId);
 
         repository.save(event);
     }
