@@ -1,10 +1,18 @@
 package ru.shpg.eventreceiver.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.shpg.eventreceiver.entity.OutboxEvent;
 
 @Repository
-public interface OutboxRepository extends JpaRepository<OutboxEvent, String> {
+@RequiredArgsConstructor
+public class OutboxRepository {
+
+    private final EntityManager em;
+
+    public void insert(OutboxEvent event) {
+        em.persist(event);
+    }
 
 }

@@ -5,16 +5,21 @@ services:
   postgres:
     image: postgres:16
     container_name: postgres
-    command: ["postgres", "-c", "wal_level=logical"]
     environment:
       POSTGRES_DB: event_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    command: >
+      postgres
+      -c wal_level=logical
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c wal_keep_size=512MB
+      -c max_connections=200
     ports:
       - "5439:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
 
   # ------------------ KAFKA (KRaft) ------------------
   kafka:
@@ -53,7 +58,7 @@ services:
 
   # ------------------ KAFKA CONNECT + DEBEZIUM ------------------
   kafka-connect:
-    image: debezium/connect:2.5
+    image: debezium/connect:2.7.3.Final
     container_name: kafka-connect
     user: "0"
     platform: linux/amd64
@@ -77,24 +82,35 @@ services:
       CONFIG_STORAGE_REPLICATION_FACTOR: 1
       OFFSET_STORAGE_REPLICATION_FACTOR: 1
       STATUS_STORAGE_REPLICATION_FACTOR: 1
+#    volumes:
+#      - ./connectors:/kafka/connect
+
+#  connector-init:
+#    image: curlimages/curl:8.5.0
+#    container_name: connector-init
+#    depends_on:
+#      - kafka-connect
+#    volumes:
+#      - ./connectors:/kafka/connectors
+#    entrypoint: [ "/bin/sh", "-c", "/kafka/connectors/register-connectors.sh" ]
 
   # ------------------ KEYCLOAK ------------------
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0
-    container_name: keycloak
-    command: start-dev
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/event_db
-      KC_DB_USERNAME: postgres
-      KC_DB_PASSWORD: postgres
-
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    ports:
-      - "9191:8080"
-    depends_on:
-      - postgres
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:24.0
+#    container_name: keycloak
+#    command: start-dev
+#    environment:
+#      KC_DB: postgres
+#      KC_DB_URL: jdbc:postgresql://postgres:5432/event_db
+#      KC_DB_USERNAME: postgres
+#      KC_DB_PASSWORD: postgres
+#
+#      KEYCLOAK_ADMIN: admin
+#      KEYCLOAK_ADMIN_PASSWORD: admin
+#    ports:
+#      - "9191:8080"
+#    depends_on:
+#      - postgres
 
   # ------------------ PROMETHEUS ------------------
   prometheus:

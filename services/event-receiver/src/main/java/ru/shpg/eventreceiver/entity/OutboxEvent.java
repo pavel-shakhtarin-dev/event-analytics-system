@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,17 +19,18 @@ public class OutboxEvent {
     @Id
     private UUID id;
 
-    @Column(name = "aggregate_id", nullable = false)
+    @Column(name = "aggregateid", nullable = false)
     private String aggregateId;
 
-    @Column(name = "aggregate_type", nullable = false)
+    @Column(name = "aggregatetype", nullable = false)
     private String aggregateType;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
     private String payload;
 
-    @Column(name = "client_timestamp", nullable = false)
-    private Instant clientTimestamp;
+    @Column(name = "event_timestamp", nullable = false)
+    private Instant eventTimestamp;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
