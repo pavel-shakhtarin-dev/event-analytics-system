@@ -18,6 +18,7 @@ public record EventRequest(
         @NotNull
         Long timestamp,
 
+        @NotNull
         Map<String, Object> payload
 
 ) {
