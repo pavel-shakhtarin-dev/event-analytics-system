@@ -1,17 +1,15 @@
 package ru.shpg.eventreceiver.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JsonUtils {
 
     private final ObjectMapper objectMapper;
-
-    public JsonUtils(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     @Named("toJson")
     public String toJson(Object obj) {
