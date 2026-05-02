@@ -11,7 +11,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @ActiveProfiles("test") // Используем профиль 'test'
 public abstract class BaseIntegrationTest {
 
-    // Поднимаем Postgres 16
+    // Postgres 16
     @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("event_db")

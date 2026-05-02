@@ -6,9 +6,9 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:postgresql://localhost:5439/event_db?currentSchema=event
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5439}/event_db?currentSchema=event
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -35,10 +35,26 @@ springdoc:
   api-docs:
     path: /v3/api-docs        # Путь к JSON-документации
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 app:
   security:
     enabled: false
+
   outbox:
     cleanup:
       enabled: true
@@ -47,3 +63,6 @@ app:
       batch-size: 1000
       shed-lock-at-most: "10m"
       shed-lock-at-least: "1m"
+
+  observability:
+    enabled: true

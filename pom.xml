@@ -28,17 +28,35 @@
     <modules>
 
         <module>services/event-receiver</module>
+        <module>services/analytic-service</module>
+        <module>starters/observability-starter</module>
 
     </modules>
 
     <dependencyManagement>
         <dependencies>
 
+            <!-- Spring Boot BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.5.13</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- open-api -->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- observability -->
+            <dependency>
+                <groupId>ru.shpg</groupId>
+                <artifactId>observability-starter</artifactId>
+                <version>0.0.1-SNAPSHOT</version> <!-- Указываем версию тут -->
             </dependency>
 
             <!-- mapstruct -->

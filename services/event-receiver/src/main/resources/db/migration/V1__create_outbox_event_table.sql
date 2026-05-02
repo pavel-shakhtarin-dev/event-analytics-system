@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS event.outbox_event (
                                                   aggregateid VARCHAR(255) NOT NULL,
                                                   aggregatetype VARCHAR(255) NOT NULL,
                                                   payload JSONB NOT NULL,
-                                                  event_timestamp TIMESTAMPTZ NOT NULL,
+                                                  event_timestamp BIGINT NOT NULL,
                                                   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

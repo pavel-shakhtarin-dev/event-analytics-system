@@ -80,6 +80,12 @@
 			<version>${shedlock.version}</version>
 		</dependency>
 
+		<!-- observability -->
+		<dependency>
+			<groupId>ru.shpg</groupId>
+			<artifactId>observability-starter</artifactId>
+		</dependency>
+
 		<!-- security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

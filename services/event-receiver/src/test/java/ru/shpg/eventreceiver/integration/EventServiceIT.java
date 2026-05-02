@@ -49,7 +49,7 @@ class EventServiceIT extends BaseIntegrationTest {
         Map<String, Object> payloadMap = objectMapper.readValue(savedEvent.getPayload(), Map.class);
 
         assertThat(savedEvent.getId()).isEqualTo(eventId);
-        assertThat(savedEvent.getAggregateType()).isEqualTo("TEST");
+        assertThat(savedEvent.getEventType()).isEqualTo("TEST");
         assertThat(payloadMap).containsEntry("key", "val");
     }
 

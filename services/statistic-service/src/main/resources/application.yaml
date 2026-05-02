@@ -1,0 +1,22 @@
+spring:
+
+  application:
+    name: statistic-service
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: clickhouse-writer
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: com.example.TransactionEvent
+        spring.json.trusted.packages: "*"
+
+  datasource:
+    url: jdbc:clickhouse://localhost:8123/default
+    driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+
+app:
+  kafka:
+    topic: outbox.transaction

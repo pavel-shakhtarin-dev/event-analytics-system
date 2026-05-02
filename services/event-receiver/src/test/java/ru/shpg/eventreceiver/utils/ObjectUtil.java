@@ -1,4 +1,4 @@
-package ru.shpg.eventreceiver.testutils;
+package ru.shpg.eventreceiver.utils;
 
 import ru.shpg.eventreceiver.model.EventRequest;
 

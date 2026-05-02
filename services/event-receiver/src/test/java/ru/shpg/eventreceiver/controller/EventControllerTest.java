@@ -16,8 +16,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.shpg.eventreceiver.testutils.ObjectUtil.createEventRequest;
-import static ru.shpg.eventreceiver.testutils.ObjectUtil.createInvalidEventRequest;
+import static ru.shpg.eventreceiver.utils.ObjectUtil.createEventRequest;
+import static ru.shpg.eventreceiver.utils.ObjectUtil.createInvalidEventRequest;
 
 @ExtendWith(MockitoExtension.class)
 class EventControllerTest {

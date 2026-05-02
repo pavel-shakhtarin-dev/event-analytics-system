@@ -21,17 +21,17 @@ public class OutboxEvent implements Persistable<UUID> {
     private UUID id;
 
     @Column(name = "aggregateid", nullable = false)
-    private String aggregateId;
+    private String userId;
 
     @Column(name = "aggregatetype", nullable = false)
-    private String aggregateType;
+    private String eventType;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
     private String payload;
 
     @Column(name = "event_timestamp", nullable = false)
-    private Instant eventTimestamp;
+    private Long eventTimestamp;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
