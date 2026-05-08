@@ -29,6 +29,7 @@
 
         <module>services/event-receiver</module>
         <module>services/analytic-service</module>
+        <module>services/statistic-service</module>
         <module>starters/observability-starter</module>
 
     </modules>

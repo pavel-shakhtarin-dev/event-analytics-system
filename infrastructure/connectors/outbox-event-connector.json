@@ -32,15 +32,15 @@
     "transforms.outbox.field.event.payload": "payload",
 
     "transforms.outbox.table.fields.additional.placement":
-    "event_timestamp:header:timestamp,aggregatetype:header:eventType",
+    "event_timestamp:header:event_timestamp,aggregatetype:header:event_type",
 
     "transforms.outbox.expand.json.payload": "true",
 
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": false,
+    "value.converter.schemas.enable": "false",
 
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": false
+    "key.converter.schemas.enable": "false"
 
   }
 }
