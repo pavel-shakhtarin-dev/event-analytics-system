@@ -1,5 +1,6 @@
 package ru.shpg.statisticservice.controller
 
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.shpg.statisticservice.model.UserStats
 import ru.shpg.statisticservice.service.StatisticService
 
+@Tag(name = "Stats Request", description = "Методы получения статистики")
 @RestController
 @RequestMapping("/stats")
 class StatisticController(

@@ -5,6 +5,7 @@ networks:
 
 services:
 
+  # ------------------ event-receiver ------------------
   event-receiver:
     build:
       context: ..
@@ -15,13 +16,53 @@ services:
     networks:
       - app-network
     environment:
-      SPRING_PROFILES_ACTIVE: local
+      SPRING_PROFILES_ACTIVE: default
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
     depends_on:
       - postgres
+      - analytic-service
+
+  # ------------------ analytic-service ------------------
+  analytic-service:
+    build:
+      context: ..
+      dockerfile: services/analytic-service/Dockerfile
+    container_name: analytic-service
+    ports:
+      - "8089:8089"
+    networks:
+      - app-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+    depends_on:
+      - kafka
+
+  # ------------------ statistic-service ------------------
+  statistic-service:
+    build:
+      context: ..
+      dockerfile: services/statistic-service/Dockerfile
+    container_name: statistic-service
+    ports:
+      - "8090:8090"
+    networks:
+      - app-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      DB_HOST: clickhouse
+      DB_PORT: 8123
+      DB_USER: default
+      DB_PASSWORD: default
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+    depends_on:
+      - clickhouse
+      - analytic-service
 
   # ------------------ POSTGRES ------------------
   postgres:
@@ -44,6 +85,27 @@ services:
       - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # ------------------ clickhouse ------------------
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3
+    container_name: clickhouse
+    ports:
+      - "8123:8123"   # HTTP
+      - "9000:9000"   # Native TCP
+    networks:
+      - app-network
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: default
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
 
   # ------------------ KAFKA (KRaft) ------------------
   kafka:
@@ -115,8 +177,6 @@ services:
       CONFIG_STORAGE_REPLICATION_FACTOR: 1
       OFFSET_STORAGE_REPLICATION_FACTOR: 1
       STATUS_STORAGE_REPLICATION_FACTOR: 1
-#    volumes:
-#      - ./connectors:/kafka/connect
 
   connect-init:
     image: curlimages/curl:latest
@@ -175,25 +235,6 @@ services:
       - app-network
     depends_on:
       - prometheus
-
-  # ------------------ clickhouse ------------------
-  clickhouse:
-    image: clickhouse/clickhouse-server:24.3
-    container_name: clickhouse
-    ports:
-      - "8123:8123"   # HTTP
-      - "9000:9000"   # Native TCP
-    environment:
-      CLICKHOUSE_DB: default
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: default
-    volumes:
-      - clickhouse_data:/var/lib/clickhouse
-      - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
 
 volumes:
   postgres_data:

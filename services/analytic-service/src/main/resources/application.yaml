@@ -9,11 +9,11 @@ spring:
     active: default
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
 
     streams:
       application-id: analytics-service
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
       properties:
         processing.guarantee: exactly_once_v2
         commit.interval.ms: 100

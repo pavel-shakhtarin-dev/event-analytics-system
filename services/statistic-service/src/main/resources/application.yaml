@@ -7,24 +7,17 @@ spring:
     name: statistic-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
     consumer:
       group-id: clickhouse-writer
       auto-offset-reset: earliest
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#      properties:
-#        spring.json.value.default.type: ru.shpg.statisticservice.model.TransactionEvent
-#        spring.json.trusted.packages: "*"
 
   datasource:
-    url: jdbc:clickhouse://localhost:8123/default
+    url: jdbc:clickhouse://${DB_HOST:localhost}:${DB_PORT:8123}/event_db
     driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
-    user: default
-    password: default
-
-  http:
-    client:
-      factory: simple
+    user: ${DB_USER:default}
+    password: ${DB_PASSWORD:default}
 
 app:
   kafka:

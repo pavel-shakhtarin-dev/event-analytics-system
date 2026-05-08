@@ -17,7 +17,7 @@ import ru.shpg.eventreceiver.security.JwtAuthConverter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@Profile("!local")
+@Profile("!default")
 public class SecurityConfig {
 
     @Bean

@@ -1,8 +1,11 @@
-CREATE TABLE IF NOT EXISTS transactions
+
+CREATE DATABASE IF NOT EXISTS event_db;
+
+CREATE TABLE IF NOT EXISTS event_db.transactions
 (
-    userId String,
-    amount Decimal(18,2),
-    timestamp DateTime
-    )
+    userId UUID,
+    amount Decimal(12,2),
+    timestamp DateTime64(3)
+)
     ENGINE = MergeTree
-    ORDER BY (userId, timestamp);
+    ORDER BY (timestamp, userId);
