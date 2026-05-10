@@ -54,6 +54,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- observability -->
+		<dependency>
+			<groupId>ru.shpg</groupId>
+			<artifactId>observability-starter</artifactId>
+		</dependency>
+
 		<!-- kotlin -->
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>

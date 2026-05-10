@@ -8,6 +8,7 @@ import ru.shpg.statisticservice.model.TransactionEvent
 import ru.shpg.statisticservice.service.StatisticService
 import ru.shpg.statisticservice.util.TransactionParser
 import java.time.Instant
+import java.util.UUID
 
 @Component
 @Suppress("unused")
@@ -23,7 +24,11 @@ class TransactionListener(
         @Header("event_timestamp") timestamp: String
     ) {
         val transactionAmount = transactionParser.parseTransaction(msg)
-        val event = TransactionEvent(userId, Instant.ofEpochMilli(timestamp.toLong()), transactionAmount.amount)
+        val event = TransactionEvent(
+            userId = UUID.fromString(userId),
+            timestamp = Instant.ofEpochMilli(timestamp.toLong()),
+            amount = transactionAmount.amount
+        )
         statisticService.saveStats(event)
     }
 

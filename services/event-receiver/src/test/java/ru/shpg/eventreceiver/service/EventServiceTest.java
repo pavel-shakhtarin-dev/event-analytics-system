@@ -11,13 +11,11 @@ import ru.shpg.eventreceiver.entity.OutboxEvent;
 import ru.shpg.eventreceiver.mapper.OutboxEventMapper;
 import ru.shpg.eventreceiver.model.EventRequest;
 import ru.shpg.eventreceiver.repository.OutboxRepository;
-import ru.shpg.eventreceiver.security.util.UserProvider;
-
-import java.util.UUID;
+import ru.shpg.observability.metrics.MetricsService;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static ru.shpg.eventreceiver.utils.ObjectUtil.createEventRequest;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
@@ -29,7 +27,7 @@ class EventServiceTest {
     private OutboxEventMapper outboxEventMapper;
 
     @Mock
-    private UserProvider userProvider;
+    private MetricsService metricsService;
 
     @InjectMocks
     private EventService eventService;
@@ -38,36 +36,30 @@ class EventServiceTest {
     @DisplayName("Should successfully process event")
     void shouldProcessEventSuccessfully() {
         // given
-        var eventId = UUID.randomUUID();
-        var userId = "test-user-123";
-        var request = new EventRequest(eventId, "TEST", 1713711600000L, null);
-        var entity = new OutboxEvent(); // Предположим, это твоя сущность
+        var request = createEventRequest();
+        var entity = new OutboxEvent();
 
-        when(userProvider.getUserId()).thenReturn(userId);
-        when(outboxEventMapper.toEntity(any(EventRequest.class), eq(userId))).thenReturn(entity);
+        when(outboxEventMapper.toEntity(any(EventRequest.class))).thenReturn(new OutboxEvent());
 
         // when
         eventService.process(request);
 
         // then
-        verify(userProvider, times(1)).getUserId();
-        verify(outboxEventMapper, times(1)).toEntity(request, userId);
+        verify(outboxEventMapper, times(1)).toEntity(request);
         verify(repository, times(1)).save(entity);
 
-        verifyNoMoreInteractions(userProvider, outboxEventMapper, repository);
+        verifyNoMoreInteractions(outboxEventMapper, repository);
     }
 
     @Test
-    @DisplayName("Should throw exception when UserProvider fails")
-    void shouldThrowExceptionWhenUserProviderFails() {
+    @DisplayName("Should throw exception when DB fails")
+    void shouldThrowExceptionWhenDBFails() {
         // given
-        var request = new EventRequest(UUID.randomUUID(), "TEST", 1L, null);
-        when(userProvider.getUserId()).thenThrow(new RuntimeException("Security error"));
+        var request = createEventRequest();
+        when(repository.save(any())).thenThrow(new RuntimeException("DB error"));
 
         // when & then
         Assertions.assertThrows(RuntimeException.class, () -> eventService.process(request));
-
-        verify(repository, never()).save(any());
     }
 
 

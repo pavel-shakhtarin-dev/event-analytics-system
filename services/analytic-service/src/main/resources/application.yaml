@@ -22,6 +22,29 @@ spring:
         state.dir: /tmp/kafka-streams
         default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+
+  endpoint:
+    health:
+      show-details: always
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
 app:
   analytics:
     strategy: amount
@@ -33,5 +56,3 @@ app:
   kafka:
     transactions-topic: outbox.transaction
     alerts-topic: alerts
-    partition-size: 12
-    replica-size: 1

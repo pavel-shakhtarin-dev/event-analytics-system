@@ -21,7 +21,7 @@ public class OutboxEvent implements Persistable<UUID> {
     private UUID id;
 
     @Column(name = "aggregateid", nullable = false)
-    private String userId;
+    private UUID userId;
 
     @Column(name = "aggregatetype", nullable = false)
     private String eventType;

@@ -11,6 +11,7 @@ public class ObjectUtil {
     public static EventRequest createEventRequest() {
         return new EventRequest(
                 UUID.randomUUID(),
+                UUID.randomUUID(),
                 "TEST",
                 Instant.now().toEpochMilli(),
                 Map.of()
@@ -20,6 +21,7 @@ public class ObjectUtil {
     public static EventRequest createInvalidEventRequest() {
         return new EventRequest(
                 null,
+                UUID.randomUUID(),
                 "TEST",
                 Instant.now().toEpochMilli(),
                 Map.of()

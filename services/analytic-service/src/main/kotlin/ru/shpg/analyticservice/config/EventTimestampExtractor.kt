@@ -11,7 +11,7 @@ class EventTimestampExtractor : TimestampExtractor {
     private val log = logger()
 
     override fun extract(record: ConsumerRecord<Any, Any>, partitionTime: Long): Long {
-        val header = record.headers().lastHeader("timestamp") ?: return partitionTime
+        val header = record.headers().lastHeader("event_timestamp") ?: return partitionTime
         return try {
             String(header.value()).toLong()
         } catch (e: Exception) {

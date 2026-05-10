@@ -1,68 +1,71 @@
 
-networks:
-  app-network:
-    driver: bridge
+#networks:
+#  app-network:
+#    driver: bridge
 
 services:
 
-  # ------------------ event-receiver ------------------
-  event-receiver:
-    build:
-      context: ..
-      dockerfile: services/event-receiver/Dockerfile
-    container_name: event-receiver
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-    depends_on:
-      - postgres
-      - analytic-service
-
-  # ------------------ analytic-service ------------------
-  analytic-service:
-    build:
-      context: ..
-      dockerfile: services/analytic-service/Dockerfile
-    container_name: analytic-service
-    ports:
-      - "8089:8089"
-    networks:
-      - app-network
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-      KAFKA_HOST: kafka
-      KAFKA_PORT: 29092
-    depends_on:
-      - kafka
-
-  # ------------------ statistic-service ------------------
-  statistic-service:
-    build:
-      context: ..
-      dockerfile: services/statistic-service/Dockerfile
-    container_name: statistic-service
-    ports:
-      - "8090:8090"
-    networks:
-      - app-network
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-      DB_HOST: clickhouse
-      DB_PORT: 8123
-      DB_USER: default
-      DB_PASSWORD: default
-      KAFKA_HOST: kafka
-      KAFKA_PORT: 29092
-    depends_on:
-      - clickhouse
-      - analytic-service
+#   ------------------ event-receiver ------------------
+#  event-receiver:
+#    build:
+#      context: ..
+#      dockerfile: services/event-receiver/Dockerfile
+#    container_name: event-receiver
+#    cap_add:
+#      - SYS_PTRACE
+#    ports:
+#      - "8080:8080"
+##    networks:
+##      - app-network
+#    environment:
+#      SPRING_PROFILES_ACTIVE: default
+#      DB_HOST: postgres
+#      DB_PORT: 5432
+#      DB_USER: postgres
+#      DB_PASSWORD: postgres
+#      LOKI_URL: http://loki:3100
+#    depends_on:
+#      - postgres
+#      - kafka
+#
+#  # ------------------ analytic-service ------------------
+#  analytic-service:
+#    build:
+#      context: ..
+#      dockerfile: services/analytic-service/Dockerfile
+#    container_name: analytic-service
+#    ports:
+#      - "8089:8089"
+##    networks:
+##      - app-network
+#    environment:
+#      SPRING_PROFILES_ACTIVE: default
+#      KAFKA_HOST: kafka
+#      KAFKA_PORT: 29092
+#    depends_on:
+#      - kafka
+#
+#  # ------------------ statistic-service ------------------
+#  statistic-service:
+#    build:
+#      context: ..
+#      dockerfile: services/statistic-service/Dockerfile
+#    container_name: statistic-service
+#    ports:
+#      - "8090:8090"
+##    networks:
+##      - app-network
+#    environment:
+#      SPRING_PROFILES_ACTIVE: default
+#      DB_HOST: clickhouse
+#      DB_PORT: 8123
+#      DB_USER: default
+#      DB_PASSWORD: default
+#      KAFKA_HOST: kafka
+#      KAFKA_PORT: 29092
+#    depends_on:
+#      - clickhouse
+#      - kafka
 
   # ------------------ POSTGRES ------------------
   postgres:
@@ -81,8 +84,8 @@ services:
       -c max_connections=200
     ports:
       - "5439:5432"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -93,8 +96,8 @@ services:
     ports:
       - "8123:8123"   # HTTP
       - "9000:9000"   # Native TCP
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     environment:
       CLICKHOUSE_DB: default
       CLICKHOUSE_USER: default
@@ -114,8 +117,8 @@ services:
     ports:
       - "9092:9092"
       - "29092:29092"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     environment:
       # Настройки узла KRaft
       KAFKA_NODE_ID: 1
@@ -129,6 +132,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 12
 
       # Позволяет транзакциям работать в кластере из 1 брокера
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -136,15 +140,14 @@ services:
       # Одна реплика для внутренних топиков
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-
   # ------------------ KAFKA UI ------------------
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
       - "9595:8080"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
@@ -157,8 +160,8 @@ services:
     platform: linux/amd64
     ports:
       - "8083:8083"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     depends_on:
       - kafka
       - postgres
@@ -183,58 +186,57 @@ services:
     container_name: connect-init
     depends_on:
       - kafka-connect
-    networks:
-      - app-network
+#    networks:
+#      - app-network
     volumes:
       - ./connectors/init-connector.sh:/scripts/init-connector.sh:ro
       - ./connectors/outbox-event-connector.json:/configs/outbox-event-connector.json:ro
     entrypoint: ["/bin/sh", "/scripts/init-connector.sh"]
     environment:
-      - CONNECT_URL=http://kafka-connect:8083
-      - CONFIG_FILE=/configs/outbox-event-connector.json
-
-
-  # ------------------ KEYCLOAK ------------------
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:24.0
-#    container_name: keycloak
-#    command: start-dev
-#    environment:
-#      KC_DB: postgres
-#      KC_DB_URL: jdbc:postgresql://postgres:5432/event_db
-#      KC_DB_USERNAME: postgres
-#      KC_DB_PASSWORD: postgres
-#
-#      KEYCLOAK_ADMIN: admin
-#      KEYCLOAK_ADMIN_PASSWORD: admin
-#    ports:
-#      - "9191:8080"
-#     networks:
-#       - app-network
-#    depends_on:
-#      - postgres
+      CONNECT_URL: http://kafka-connect:8083
+      CONFIG_FILE: /configs/outbox-event-connector.json
 
   # ------------------ PROMETHEUS ------------------
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.51.0
     container_name: prometheus
     volumes:
-      - ./metrics/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-    networks:
-      - app-network
+#    networks:
+#      - app-network
 
   # ------------------ GRAFANA ------------------
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.2
     container_name: grafana
     ports:
       - "3000:3000"
-    networks:
-      - app-network
+    volumes:
+      # Провижининг (настройки)
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      # Сами файлы дашбордов
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clickhouse-datasource
+#      GF_SECURITY_ADMIN_PASSWORD: admin
+#      GF_AUTH_ANONYMOUS_ENABLED: true # вход без логина
+#    networks:
+#      - app-network
     depends_on:
       - prometheus
+
+  # -------------------- LOKI --------------------
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: loki
+    ports:
+      - "3100:3100"
+#    networks:
+#      - app-network
+    command: -config.file=/etc/loki/local-config.yaml
 
 volumes:
   postgres_data:

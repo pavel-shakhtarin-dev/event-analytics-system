@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.shpg.eventreceiver.model.EventRequest;
 import ru.shpg.eventreceiver.repository.OutboxRepository;
-import ru.shpg.eventreceiver.security.util.UserProvider;
 import ru.shpg.eventreceiver.service.EventService;
 
 import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 class EventServiceIT extends BaseIntegrationTest {
 
@@ -23,9 +20,6 @@ class EventServiceIT extends BaseIntegrationTest {
 
     @Autowired
     private OutboxRepository repository;
-
-    @MockitoBean
-    private UserProvider userProvider;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -36,10 +30,13 @@ class EventServiceIT extends BaseIntegrationTest {
     void shouldSaveEventToDb() throws Exception {
         // given
         UUID eventId = UUID.randomUUID();
-        String mockUserId = "test-user-id";
-        EventRequest request = new EventRequest(eventId, "TEST", System.currentTimeMillis(), Map.of("key", "val"));
-
-        when(userProvider.getUserId()).thenReturn(mockUserId);
+        EventRequest request = new EventRequest(
+                eventId,
+                UUID.randomUUID(),
+                "TEST",
+                System.currentTimeMillis(),
+                Map.of("key", "val")
+        );
 
         // when
         eventService.process(request);

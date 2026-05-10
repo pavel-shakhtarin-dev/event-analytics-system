@@ -6,7 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "app.kafka")
 data class KafkaProperties(
     val transactionsTopic: String,
-    val alertsTopic: String,
-    val partitionSize: Int,
-    val replicaSize: Int
+    val alertsTopic: String
 )

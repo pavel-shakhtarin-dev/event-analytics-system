@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  # 1. Event Receiver
+  - job_name: 'event-receiver'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080', 'event-receiver:8080']
+        labels:
+          application: 'event-receiver'
+
+  # 2. Analytic Service
+  - job_name: 'analytic-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8089', 'analytic-service:8089']
+        labels:
+          application: 'analytic-service'
+
+  # 3. Statistic Service
+  - job_name: 'statistic-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8090', 'statistic-service:8090']
+        labels:
+          application: 'statistic-service'

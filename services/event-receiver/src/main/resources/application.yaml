@@ -22,12 +22,6 @@ spring:
     baseline-on-migrate: true
     default-schema: event
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/event-platform
-
 springdoc:
   swagger-ui:
     path: /swagger-ui.html    # Путь к UI
@@ -39,22 +33,25 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus
+        include: prometheus, health, info
 
   endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
+    health:
+      show-details: always
 
   metrics:
     tags:
       application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 app:
-  security:
-    enabled: false
-
   outbox:
     cleanup:
       enabled: true
@@ -63,6 +60,3 @@ app:
       batch-size: 1000
       shed-lock-at-most: "10m"
       shed-lock-at-least: "1m"
-
-  observability:
-    enabled: true

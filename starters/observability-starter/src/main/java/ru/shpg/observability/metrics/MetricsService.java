@@ -17,4 +17,8 @@ public class MetricsService {
         meterRegistry.counter(name, tags).increment();
     }
 
+    public void incrementCounter(String name, String... tags) {
+        meterRegistry.counter(name, tags).increment();
+    }
+
 }

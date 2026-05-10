@@ -1,0 +1,12 @@
+apiVersion: 1
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    # Указываем имя сервиса из docker-compose
+    url: http://loki:3100
+    version: 1
+    editable: true
+    jsonData:
+      # Настройки для удобного отображения логов
+      maxLines: 1000

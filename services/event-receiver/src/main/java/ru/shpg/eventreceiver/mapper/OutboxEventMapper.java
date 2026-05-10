@@ -9,11 +9,11 @@ import ru.shpg.eventreceiver.model.EventRequest;
 public interface OutboxEventMapper {
 
     @Mapping(target = "id", source = "request.eventId")
-    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "userId", source = "request.userId")
     @Mapping(target = "eventType", source = "request.type")
     @Mapping(target = "payload", source = "request.payload", qualifiedByName = "toJson")
     @Mapping(target = "eventTimestamp", source = "request.timestamp")
     @Mapping(target = "createdAt", expression = "java(java.time.Instant.now())")
-    OutboxEvent toEntity(EventRequest request, String userId);
+    OutboxEvent toEntity(EventRequest request);
 
 }

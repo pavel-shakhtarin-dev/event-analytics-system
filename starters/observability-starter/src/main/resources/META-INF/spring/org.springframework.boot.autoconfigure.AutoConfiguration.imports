@@ -1,3 +1,2 @@
 ru.shpg.observability.config.ObservabilityAutoConfiguration
 ru.shpg.observability.config.MetricsAutoConfiguration
-ru.shpg.observability.config.TracingAutoConfiguration

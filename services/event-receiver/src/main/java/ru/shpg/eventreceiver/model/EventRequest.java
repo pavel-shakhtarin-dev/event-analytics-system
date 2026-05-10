@@ -12,6 +12,9 @@ public record EventRequest(
         @NotNull
         UUID eventId,
 
+        @NotNull
+        UUID userId,
+
         @NotBlank
         String type,
 
