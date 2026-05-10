@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS event_db.transactions
 (
     userId UUID,
     amount Decimal(12,2),
-    timestamp DateTime64(3)
+    transactionTimestamp DateTime64(3)
 )
     ENGINE = MergeTree
-    ORDER BY (timestamp, userId);
+    ORDER BY (transactionTimestamp, userId);

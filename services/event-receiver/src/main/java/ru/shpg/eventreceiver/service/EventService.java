@@ -27,7 +27,7 @@ public class EventService {
 
         var event = outboxEventMapper.toEntity(request);
 
-        metricsService.incrementCounter("app_event", "type", request.type(), "userId", String.valueOf(request.userId()));
+        metricsService.incrementCounter("app_event", "type", request.type());
 
         repository.save(event);
     }

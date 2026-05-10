@@ -6,66 +6,66 @@
 services:
 
 #   ------------------ event-receiver ------------------
-#  event-receiver:
-#    build:
-#      context: ..
-#      dockerfile: services/event-receiver/Dockerfile
-#    container_name: event-receiver
-#    cap_add:
-#      - SYS_PTRACE
-#    ports:
-#      - "8080:8080"
-##    networks:
-##      - app-network
-#    environment:
-#      SPRING_PROFILES_ACTIVE: default
-#      DB_HOST: postgres
-#      DB_PORT: 5432
-#      DB_USER: postgres
-#      DB_PASSWORD: postgres
-#      LOKI_URL: http://loki:3100
-#    depends_on:
-#      - postgres
-#      - kafka
+  event-receiver:
+    build:
+      context: ..
+      dockerfile: services/event-receiver/Dockerfile
+    container_name: event-receiver
+    cap_add:
+      - SYS_PTRACE
+    ports:
+      - "8080:8080"
+#    networks:
+#      - app-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      LOKI_URL: http://loki:3100
+    depends_on:
+      - postgres
+      - kafka
 #
 #  # ------------------ analytic-service ------------------
-#  analytic-service:
-#    build:
-#      context: ..
-#      dockerfile: services/analytic-service/Dockerfile
-#    container_name: analytic-service
-#    ports:
-#      - "8089:8089"
-##    networks:
-##      - app-network
-#    environment:
-#      SPRING_PROFILES_ACTIVE: default
-#      KAFKA_HOST: kafka
-#      KAFKA_PORT: 29092
-#    depends_on:
-#      - kafka
+  analytic-service:
+    build:
+      context: ..
+      dockerfile: services/analytic-service/Dockerfile
+    container_name: analytic-service
+    ports:
+      - "8089:8089"
+#    networks:
+#      - app-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+    depends_on:
+      - kafka
 #
 #  # ------------------ statistic-service ------------------
-#  statistic-service:
-#    build:
-#      context: ..
-#      dockerfile: services/statistic-service/Dockerfile
-#    container_name: statistic-service
-#    ports:
-#      - "8090:8090"
-##    networks:
-##      - app-network
-#    environment:
-#      SPRING_PROFILES_ACTIVE: default
-#      DB_HOST: clickhouse
-#      DB_PORT: 8123
-#      DB_USER: default
-#      DB_PASSWORD: default
-#      KAFKA_HOST: kafka
-#      KAFKA_PORT: 29092
-#    depends_on:
-#      - clickhouse
-#      - kafka
+  statistic-service:
+    build:
+      context: ..
+      dockerfile: services/statistic-service/Dockerfile
+    container_name: statistic-service
+    ports:
+      - "8090:8090"
+#    networks:
+#      - app-network
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      DB_HOST: clickhouse
+      DB_PORT: 8123
+      DB_USER: default
+      DB_PASSWORD: default
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 29092
+    depends_on:
+      - clickhouse
+      - kafka
 
   # ------------------ POSTGRES ------------------
   postgres:
@@ -184,8 +184,6 @@ services:
   connect-init:
     image: curlimages/curl:latest
     container_name: connect-init
-    depends_on:
-      - kafka-connect
 #    networks:
 #      - app-network
     volumes:
@@ -195,6 +193,9 @@ services:
     environment:
       CONNECT_URL: http://kafka-connect:8083
       CONFIG_FILE: /configs/outbox-event-connector.json
+    depends_on:
+      - kafka-connect
+      - event-receiver
 
   # ------------------ PROMETHEUS ------------------
   prometheus:

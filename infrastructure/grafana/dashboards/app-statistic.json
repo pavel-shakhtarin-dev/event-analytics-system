@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "panels": [
     {
@@ -43,8 +42,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 21,
-        "w": 11,
+        "h": 24,
+        "w": 7,
         "x": 0,
         "y": 0
       },
@@ -91,12 +90,12 @@
         "type": "grafana-clickhouse-datasource",
         "uid": "PDEE91DDB90597936"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "displayName": "User: ${__data.fields.userId}",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -104,25 +103,22 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          }
+          },
+          "unit": "currencyRUB"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 21,
-        "w": 13,
-        "x": 11,
+        "h": 24,
+        "w": 17,
+        "x": 7,
         "y": 0
       },
       "id": 2,
       "options": {
-        "displayMode": "gradient",
+        "displayMode": "lcd",
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -133,11 +129,11 @@
             "lastNotNull"
           ],
           "fields": "",
-          "values": false
+          "values": true
         },
         "showUnfilled": true,
         "sizing": "auto",
-        "valueMode": "color"
+        "valueMode": "text"
       },
       "pluginVersion": "10.4.2",
       "targets": [
@@ -224,11 +220,11 @@
           },
           "pluginVersion": "4.17.0",
           "queryType": "table",
-          "rawSql": "SELECT userId, sum(amount) as total_amount FROM \"event_db\".\"transactions\" WHERE ( timestamp >= $__fromTime AND timestamp <= $__toTime ) GROUP BY userId ORDER BY total_amount DESC LIMIT 10",
+          "rawSql": "SELECT \r\n    concat('USER ID: ', toString(userId)) as userId, \r\n    sum(amount) as total_amount \r\nFROM event_db.transactions \r\nWHERE transactionTimestamp BETWEEN $__fromTime AND $__toTime\r\nGROUP BY userId\r\nORDER BY total_amount DESC \r\nLIMIT 10\r\n",
           "refId": "A"
         }
       ],
-      "title": "Panel Title",
+      "title": "Top Users",
       "type": "bargauge"
     }
   ],
@@ -239,13 +235,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Event Receiver Dashboard",
   "uid": "afln5fj0vft34a",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

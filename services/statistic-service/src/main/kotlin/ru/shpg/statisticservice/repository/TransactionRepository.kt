@@ -15,7 +15,7 @@ class TransactionRepository(
     fun save(event: TransactionEvent) {
         jdbcTemplate.update(
             """
-            INSERT INTO transactions (userId, amount, timestamp)
+            INSERT INTO transactions (userId, amount, transactionTimestamp)
             VALUES (?, ?, ?)
             """.trimIndent(),
             event.userId,
@@ -29,7 +29,7 @@ class TransactionRepository(
             """
             SELECT userId, sum(amount) as total
             FROM transactions
-            WHERE timestamp BETWEEN ? AND ?
+            WHERE transactionTimestamp BETWEEN ? AND ?
             GROUP BY userId
             """.trimIndent(),
             { rs, _ ->
