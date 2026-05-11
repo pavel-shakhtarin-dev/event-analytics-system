@@ -1,0 +1,15 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: simulation
+
+simulation:
+  url: "http://${RECEIVER_HOST:localhost}:${RECEIVER_PORT:8080}/events"
+  users-count: 100
+  users-load-ratio: 0.1
+  other-types-ratio: 0.1
+  duplicate-ratio: 0.05
+  invalid-ratio: 0.05  # 10% невалидных запросов
+  period-ms: 100     # как часто слать пачку данных

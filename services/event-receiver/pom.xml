@@ -8,7 +8,7 @@
 
 	<parent>
 		<groupId>ru.shpg</groupId>
-		<artifactId>event-platform-microservices</artifactId>
+		<artifactId>event-analytics-system</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
