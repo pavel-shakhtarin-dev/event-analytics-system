@@ -8,7 +8,7 @@
 
     <groupId>ru.shpg</groupId>
     <artifactId>event-analytics-system</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -59,7 +59,7 @@
             <dependency>
                 <groupId>ru.shpg</groupId>
                 <artifactId>observability-starter</artifactId>
-                <version>0.0.1-SNAPSHOT</version> <!-- Указываем версию тут -->
+                <version>0.0.1</version>
             </dependency>
 
             <!-- mapstruct -->
