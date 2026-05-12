@@ -6,6 +6,8 @@ import ru.shpg.statisticservice.model.TransactionEvent
 import ru.shpg.statisticservice.model.UserStats
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @Repository
 class TransactionRepository(
@@ -25,11 +27,14 @@ class TransactionRepository(
     }
 
     fun getStats(from: Instant, to: Instant): List<UserStats> {
+
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC)
+
         return jdbcTemplate.query(
             """
             SELECT userId, sum(amount) as total
             FROM transactions
-            WHERE transactionTimestamp BETWEEN ? AND ?
+            WHERE transactionTimestamp BETWEEN toDateTime64(?, 3) AND toDateTime64(?, 3)
             GROUP BY userId
             """.trimIndent(),
             { rs, _ ->
@@ -38,8 +43,8 @@ class TransactionRepository(
                     total = rs.getBigDecimal("total")
                 )
             },
-            Timestamp.from(from),
-            Timestamp.from(to)
+            formatter.format(from),
+            formatter.format(to)
         )
     }
 }
