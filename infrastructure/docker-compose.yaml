@@ -1,8 +1,4 @@
 
-#networks:
-#  app-network:
-#    driver: bridge
-
 services:
 
 #   ------------------ event-receiver ------------------
@@ -15,8 +11,6 @@ services:
       - SYS_PTRACE
     ports:
       - "8080:8080"
-#    networks:
-#      - app-network
     environment:
       SPRING_PROFILES_ACTIVE: default
       DB_HOST: postgres
@@ -36,16 +30,14 @@ services:
     container_name: analytic-service
     ports:
       - "8089:8089"
-#    networks:
-#      - app-network
     environment:
       SPRING_PROFILES_ACTIVE: default
       KAFKA_HOST: kafka
       KAFKA_PORT: 29092
     depends_on:
       - kafka
-#
-#  # ------------------ statistic-service ------------------
+
+  # ------------------ statistic-service ------------------
   statistic-service:
     build:
       context: ..
@@ -53,8 +45,6 @@ services:
     container_name: statistic-service
     ports:
       - "8090:8090"
-#    networks:
-#      - app-network
     environment:
       SPRING_PROFILES_ACTIVE: default
       DB_HOST: clickhouse
@@ -84,8 +74,6 @@ services:
       -c max_connections=200
     ports:
       - "5439:5432"
-#    networks:
-#      - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -96,8 +84,6 @@ services:
     ports:
       - "8123:8123"   # HTTP
       - "9000:9000"   # Native TCP
-#    networks:
-#      - app-network
     environment:
       CLICKHOUSE_DB: default
       CLICKHOUSE_USER: default
@@ -117,8 +103,6 @@ services:
     ports:
       - "9092:9092"
       - "29092:29092"
-#    networks:
-#      - app-network
     environment:
       # Настройки узла KRaft
       KAFKA_NODE_ID: 1
@@ -146,8 +130,6 @@ services:
     container_name: kafka-ui
     ports:
       - "9595:8080"
-#    networks:
-#      - app-network
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
@@ -160,8 +142,6 @@ services:
     platform: linux/amd64
     ports:
       - "8083:8083"
-#    networks:
-#      - app-network
     depends_on:
       - kafka
       - postgres
@@ -184,8 +164,6 @@ services:
   connect-init:
     image: curlimages/curl:latest
     container_name: connect-init
-#    networks:
-#      - app-network
     volumes:
       - ./connectors/init-connector.sh:/scripts/init-connector.sh:ro
       - ./connectors/outbox-event-connector.json:/configs/outbox-event-connector.json:ro
@@ -205,8 +183,6 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-#    networks:
-#      - app-network
 
   # ------------------ GRAFANA ------------------
   grafana:
@@ -222,10 +198,6 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
     environment:
       GF_INSTALL_PLUGINS: grafana-clickhouse-datasource
-#      GF_SECURITY_ADMIN_PASSWORD: admin
-#      GF_AUTH_ANONYMOUS_ENABLED: true # вход без логина
-#    networks:
-#      - app-network
     depends_on:
       - prometheus
 
@@ -235,8 +207,6 @@ services:
     container_name: loki
     ports:
       - "3100:3100"
-#    networks:
-#      - app-network
     command: -config.file=/etc/loki/local-config.yaml
 
 volumes:
